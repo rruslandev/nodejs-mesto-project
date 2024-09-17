@@ -18,7 +18,7 @@ export const createCard = (
   const owner = res.locals.user?._id
 
   Card.create({ name, link, owner })
-    .then((card) => res.send(card))
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Некорректные данные при создании карточки' })

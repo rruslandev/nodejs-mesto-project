@@ -26,8 +26,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {})
     console.error('Ошибка подключения к базе данных', err)
   })
 
-app.use('/', userRoutes)
-
 app.use((req: Request, res: Response<unknown, AuthContext>, next: NextFunction) => {
   res.locals.user = {
     _id: '65ce3b5af85c5bc50f2b202c',
@@ -35,8 +33,14 @@ app.use((req: Request, res: Response<unknown, AuthContext>, next: NextFunction) 
   next()
 })
 
+app.use('/', userRoutes)
 app.use('/', cardRoutes)
 
+app.use((req: Request, res: Response) => {
+  res.status(404).send({ message: 'Роут не найден' })
+})
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((err: any, req: Request, res: Response) => {
   const statusCode = err.statusCode || INTERNAL_SERVER_ERROR
   const message = statusCode === INTERNAL_SERVER_ERROR ? 'На сервере произошла ошибка' : err.message
