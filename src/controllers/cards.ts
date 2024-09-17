@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import Card from '../models/card'
 import { AuthContext } from '../types'
-import { BAD_REQUEST, NOT_FOUND } from '../constants'
+import { BAD_REQUEST, CREATED, NOT_FOUND } from '../constants'
 
 export const getCards = (req: Request, res: Response, next: NextFunction) => {
   Card.find({})
@@ -18,7 +18,7 @@ export const createCard = (
   const owner = res.locals.user?._id
 
   Card.create({ name, link, owner })
-    .then((card) => res.send(card))
+    .then((card) => res.status(CREATED).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Некорректные данные при создании карточки' })

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import User from '../models/user'
 import { AuthContext } from '../types'
-import { BAD_REQUEST, NOT_FOUND } from '../constants'
+import { BAD_REQUEST, CREATED, NOT_FOUND } from '../constants'
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
   User.find({})
@@ -28,7 +28,7 @@ export const getUserById = (req: Request, res: Response, next: NextFunction) => 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const { name, about, avatar } = req.body
   User.create({ name, about, avatar })
-    .then((user) => res.send(user))
+    .then((user) => res.status(CREATED).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Некорректные данные при создании пользователя' })
