@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, Schema } from 'mongoose'
+import validateUrl from '../utils/validateUrl'
 
 export interface ICard extends Document {
   name: string;
@@ -18,6 +19,10 @@ const cardSchema: Schema<ICard> = new Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: validateUrl,
+      message: 'Некорректный URL изображения',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -35,6 +40,6 @@ const cardSchema: Schema<ICard> = new Schema({
   },
 })
 
-const Card: Model<ICard> = mongoose.model<ICard>('card', cardSchema)
+const Card: Model<ICard> = mongoose.model<ICard>('card', cardSchema);
 
 export default Card

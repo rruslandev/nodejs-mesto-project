@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 import User from '../models/user'
 import { AuthContext } from '../types'
-import { BAD_REQUEST, NOT_FOUND } from '../constants'
+import { BAD_REQUEST, NOT_FOUND, OK } from '../constants'
+
+const { JWT_SECRET = 'secret-key' } = process.env
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => {
   User.find({})
-    .then((users) => res.send(users))
+    .then((users) => res.status(OK).send(users))
     .catch((err) => next(err))
 }
 
