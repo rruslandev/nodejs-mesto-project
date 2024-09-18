@@ -40,6 +40,6 @@ const cardSchema: Schema<ICard> = new Schema({
   },
 })
 
-const Card: Model<ICard> = mongoose.model<ICard>('card', cardSchema);
+const Card: Model<ICard> = mongoose.model<ICard>('card', cardSchema)
 
 export default Card
