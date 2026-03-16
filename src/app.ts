@@ -11,7 +11,7 @@ import NotFoundError from './errors/NotFoundError'
 import auth from './middlewares/auth'
 import { INTERNAL_SERVER_ERROR } from './constants'
 
-const { PORT = 3000 } = process.env
+const { PORT = 3001 } = process.env
 
 const app = express()
 
@@ -22,27 +22,35 @@ app.use(cookieParser())
 app.use(requestLogger)
 
 // Роуты без авторизации
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().custom((value, helpers) => {
-      if (validateUrl(value)) {
-        return value
-      }
-      return helpers.message({ custom: 'Некорректный URL' })
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().custom((value, helpers) => {
+        if (validateUrl(value)) {
+          return value
+        }
+        return helpers.message({ custom: 'Некорректный URL' })
+      }),
     }),
   }),
-}), createUser)
+  createUser,
+)
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    }),
   }),
-}), login)
+  login,
+)
 
 // Авторизация
 app.use(auth)
@@ -68,11 +76,15 @@ app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
   const { statusCode = INTERNAL_SERVER_ERROR, message } = err
 
   res.status(statusCode).send({
-    message: statusCode === INTERNAL_SERVER_ERROR ? 'На сервере произошла ошибка' : message,
+    message:
+      statusCode === INTERNAL_SERVER_ERROR
+        ? 'На сервере произошла ошибка'
+        : message,
   })
 })
 
-mongoose.connect('mongodb://localhost:27017/mestodb')
+mongoose
+  .connect('mongodb://localhost:27017/mestodb')
   .then(() => {
     console.log('Подключение к базе данных успешно')
     app.listen(PORT, () => {

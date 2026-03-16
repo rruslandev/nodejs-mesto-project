@@ -15,7 +15,11 @@ export const getCards = (req: Request, res: Response, next: NextFunction) => {
 }
 
 // Создать карточку
-export const createCard = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const createCard = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { name, link } = req.body
   const owner = req.user?._id
 
@@ -32,7 +36,11 @@ export const createCard = (req: AuthRequest, res: Response, next: NextFunction) 
 }
 
 // Удалить карточку
-export const deleteCard = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const deleteCard = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const userId = req.user?._id
 
   Card.findById(req.params.cardId)
@@ -56,7 +64,11 @@ export const deleteCard = (req: AuthRequest, res: Response, next: NextFunction) 
 }
 
 // Поставить лайк
-export const likeCard = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const likeCard = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user?._id } },
@@ -79,7 +91,11 @@ export const likeCard = (req: AuthRequest, res: Response, next: NextFunction) =>
 }
 
 // Убрать лайк
-export const dislikeCard = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const dislikeCard = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user?._id } },
