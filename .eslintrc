@@ -46,5 +46,15 @@
     ],
     "semi": ["error", "never"],
     "no-console": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["ecosystem.config.js"],
+      "parserOptions": { "sourceType": "script" },
+      "rules": {
+        "import/no-commonjs": "off",
+        "@typescript-eslint/no-require-imports": "off"
+      }
+    }
+  ]
 }

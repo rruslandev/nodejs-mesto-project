@@ -1,7 +1,9 @@
+import 'dotenv/config'
 import express, { Request, Response, NextFunction } from 'express'
 import mongoose from 'mongoose'
 import { celebrate, errors, Joi } from 'celebrate'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import { requestLogger, errorLogger } from './middlewares/logger'
 import userRoutes from './routes/users'
 import cardRoutes from './routes/cards'
@@ -11,17 +13,22 @@ import NotFoundError from './errors/NotFoundError'
 import auth from './middlewares/auth'
 import { INTERNAL_SERVER_ERROR } from './constants'
 
-const { PORT = 3001 } = process.env
+const { PORT = 3001, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
 
-// Логгер запросов
 app.use(requestLogger)
 
-// Роуты без авторизации
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт')
+  }, 0)
+})
+
 app.post(
   '/signup',
   celebrate({
@@ -84,7 +91,7 @@ app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
 })
 
 mongoose
-  .connect('mongodb://localhost:27017/mestodb')
+  .connect(MONGO_URL)
   .then(() => {
     console.log('Подключение к базе данных успешно')
     app.listen(PORT, () => {
